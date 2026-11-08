@@ -96,7 +96,6 @@ HTML_CODE = """
 .u img{width:100px;height:100px;object-fit:cover;border-radius:10px;margin-top:6px;border:2px solid #fff}
 .speak-out{width:32px;height:32px;background:#fff;border:1px solid #e0e0e0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);flex-shrink:0;font-size:16px}
 .speak-out.playing{background:#111;color:#fff}
-/* FIXED BOX - SEND ICON BAHAR NAHI JAYEGA */
 .wrap{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px 12px 18px;border-top:1px solid #f0f0f0}
 .box{background:#f2f2f2;border-radius:30px;padding:5px 6px 5px 18px;display:flex;align-items:center;gap:6px;max-width:700px;margin:0 auto;border:1px solid #e9e9e9;overflow:hidden;flex-wrap:nowrap}
 .box input{flex:1;border:0;background:transparent;outline:none;font-size:16px;padding:10px 0;min-width:0;width:0}
@@ -105,6 +104,8 @@ HTML_CODE = """
 .icon-voice{background:#2f5eff;color:#fff;border:0;flex-shrink:0}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .rec-hint{font-size:12px;color:#ff1a8a;font-weight:700;display:none;position:absolute;bottom:70px;left:50%;transform:translateX(-50%);background:#fff;padding:6px 12px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.15);border:1px solid #ff1a8a}
+.rec-bar{background:#f2f2f2;border-radius:30px;padding:6px;display:none;align-items:center;gap:8px;max-width:700px;margin:0 auto;border:1px solid #e9e9e9}
+.rec-bar.show{display:flex}
 .modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .modal{width:100%;max-width:500px;background:#fff;border-radius:24px;padding:22px;box-shadow:0 20px 40px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto}
 .modal h2{margin:0 0 6px;font-size:22px;font-weight:900}.modal p{margin:0 0 14px;color:#666;font-size:14px}
@@ -146,7 +147,6 @@ HTML_CODE = """
 .cam-overlay{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:6}
 .cam-label{position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.7);color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;z-index:6}
 .dot{width:8px;height:8px;background:#ff0000;border-radius:50%;animation:pulse 1s infinite}
-/* FIXED SEARCH BAR - SEND BAHAR NAHI JAYEGA */
 .voice-bottom{padding:10px 12px;background:#fff;border-top:1px solid #eee;display:flex;flex-direction:column;gap:8px}
 .search-bar{width:100%;max-width:720px;margin:0 auto;background:#f2f2f2;border-radius:28px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:6px;border:1px solid #e6e6e6;overflow:hidden;flex-wrap:nowrap}
 .search-bar input{flex:1;border:0;background:transparent;outline:none;font-size:15px;padding:10px 0;min-width:0;width:0}
@@ -160,22 +160,21 @@ HTML_CODE = """
 <body>
 <div class="head"><div><div style="font-size:14px;opacity:.7">my</div><div class="sanjuu"><b>sanj</b><span>uu</span>💖</div><div class="live">● LIVE VOICE + CAM FIXED ✨</div></div><div class="coding">coding</div></div>
 <div class="center"><div id="chat"><div class="row"><div class="a">Boss send wala icon fix kiya - ab box ke andar hi rahega! Camera black wala bhi fix kiya - ab sahi dikhega!</div><div class="speak-out" onclick="speakText(this.parentElement.querySelector('.a').innerText, this)">🔈</div></div></div></div>
-<div class="rec-hint" id="recHint">🔴 Recording... dabake rakho - chodoge toh send hoga</div>
+<div class="rec-hint" id="recHint">🔴 Recording...</div>
 <div class="lightbox" id="lightbox" onclick="closeLightbox()"><div class="lightbox-close" onclick="closeLightbox()">✕</div><img id="lightboxImg" src="" /></div>
 
 <div class="voice-mode" id="voiceMode">
   <div class="voice-top"><div style="font-weight:900;font-size:18px">my <span style="color:#ff1a8a">sanjuu</span> • Live 💖</div><div class="icon-btn" onclick="closeVoiceMode()" style="width:34px;height:34px">✕</div></div>
   <div class="voice-center" id="voiceCenter">
     <div class="live-cam-view" id="liveCamView">
-      <video id="liveCamVideo" autoplay playsinline></video>
+      <video id="liveCamVideo" autoplay playsinline muted></video>
       <div class="cam-label"><div class="dot"></div> LIVE CAM - Sanjuu dekh rahi hai</div>
       <div class="cam-overlay"><div class="icon-btn" onclick="closeLiveCam()" style="background:#fff">✕ Close</div></div>
     </div>
     <div class="orb-area" id="orbArea">
       <div class="orb" id="orb"><span style="font-size:52px">💖</span></div>
       <div class="wave-bars" id="waveBars" style="display:none"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      <div class="voice-status" id="voiceStatus">Mic ON hai Boss 🎤 Bolo!
-Mute karna hai toh mic pe click karo</div>
+      <div class="voice-status" id="voiceStatus">Bolo Boss 💖</div>
       <div class="voice-transcript" id="voiceTranscript"></div>
     </div>
   </div>
@@ -193,7 +192,6 @@ Mute karna hai toh mic pe click karo</div>
       </div>
       <div class="icon-btn" onclick="openLiveCam()" title="Live Camera ON">📷</div>
     </div>
-    <div style="text-align:center;font-size:11px;color:#888">🎤 Mic ON = bolo, Click = MUTE 🔇 • 📷 Camera ON = Sanjuu live dekhegi Boss!</div>
   </div>
   <div class="modal-bg" id="voicePlusMenu" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this) toggleVoicePlus()">
     <div class="modal" style="max-width:340px">
@@ -247,12 +245,12 @@ Mute karna hai toh mic pe click karo</div>
   </div>
 </div>
 
-<div class="wrap"><div class="box"><input id="q" placeholder="Type a message... Ask Sanjuu 💖" onkeypress="if(event.key=='Enter')send()" oninput="checkInput()"><div class="icon" id="camBtn" onclick="openCreateModal()">🎨</div><div class="icon mic-btn" id="mic">🎙️</div><div class="icon icon-voice" id="voiceModeBtn" onclick="openVoiceMode()" title="Live Voice + Camera"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M2 10v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-2 0zm4-4v8a1 1 0 0 0 2 0v-8a1 1 0 0 0-2 0zm4-2v12a1 1 0 0 0 2 0V4a1 1 0 0 0-2 0zm4 3v6a1 1 0 0 0 2 0V7a1 1 0 0 0-2 0zm4-1v8a1 1 0 0 0 2 0V6a1 1 0 0 0-2 0z" fill="white"/></svg></div><div class="icon" id="sendBtn" onclick="send()" style="display:none;background:#111;color:#fff;">↑</div></div></div>
+<div class="wrap"><div class="box" id="mainBox"><input id="q" placeholder="Type a message... Ask Sanjuu 💖" onkeypress="if(event.key=='Enter')send()" oninput="checkInput()"><div class="icon" id="camBtn" onclick="openCreateModal()">🎨</div><div class="icon mic-btn" id="mic">🎙️</div><div class="icon icon-voice" id="voiceModeBtn" onclick="openVoiceMode()" title="Live Voice + Camera"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M2 10v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-2 0zm4-4v8a1 1 0 0 0 2 0v-8a1 1 0 0 0-2 0zm4-2v12a1 1 0 0 0 2 0V4a1 1 0 0 0-2 0zm4 3v6a1 1 0 0 0 2 0V7a1 1 0 0 0-2 0zm4-1v8a1 1 0 0 0 2 0V6a1 1 0 0 0-2 0z" fill="white"/></svg></div><div class="icon" id="sendBtn" onclick="send()" style="display:none;background:#111;color:#fff;">↑</div></div><div class="rec-bar" id="recBar"><div onclick="cancelNewRecording()" style="width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0">❌</div><div style="flex:1;display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;background:#ff0000;border-radius:50%;animation:pulse 1s infinite"></div><span id="recTime" style="font-weight:800;font-size:15px">0:00</span><span style="font-size:13px;color:#666">Recording...</span></div><div onclick="stopNewRecording()" style="width:40px;height:40px;background:#111;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;flex-shrink:0">↑</div></div></div>
 <script>
 let mediaRecorder=null, audioChunks=[], isRecording=false, streamRef=null, currentSpeakBtn=null, recTimer=null, recSeconds=0;
 let selectedType='', selectedFile=null, selectedFileUrl='';
 let liveRecorder=null, liveChunks=[], liveStream=null, isLiveMode=false, liveTimer=null;
-let liveCamStream=null, isMicMuted=false, isLiveCamOn=false, voiceCapturedImage='', lastCamFrame='';
+let liveCamStream=null, isMicMuted=false, isLiveCamOn=false, voiceCapturedImage='', lastCamFrame='', liveVisionTimer=null;
 
 function cleanForSpeech(text){
     let t = text.replace(/__IMAGE__.*__.*/g, '');
@@ -273,8 +271,9 @@ function speakText(rawText, btn, onEnd){
     window.speechSynthesis.cancel();
     if(btn && currentSpeakBtn && currentSpeakBtn!==btn){ currentSpeakBtn.classList.remove('playing'); currentSpeakBtn.innerText='🔈'; }
     let clean = cleanForSpeech(rawText); if(!clean){ if(onEnd) onEnd(); return; }
+    // FIX: Dohrana band - sirf answer bolo, question dobara mat bolo. Fast + smooth voice
     let utter = new SpeechSynthesisUtterance(clean);
-    utter.lang='hi-IN'; utter.rate=0.95; utter.pitch=1.18;
+    utter.lang='hi-IN'; utter.rate=1.08; utter.pitch=1.12; utter.volume=1;
     let v = getLovelyVoice(); if(v) utter.voice=v;
     if(btn){ btn.classList.add('playing'); btn.innerText='🔊'; currentSpeakBtn=btn; }
     utter.onend=()=>{ if(btn){ btn.classList.remove('playing'); btn.innerText='🔈'; currentSpeakBtn=null; } if(onEnd) onEnd(); };
@@ -316,7 +315,7 @@ function generateLocalLogo(text, type){
 function openVoiceMode(){
   document.getElementById('voiceMode').style.display='flex';
   isLiveMode=true; isMicMuted=false;
-  document.getElementById('voiceStatus').innerText='Mic ON hai Boss 🎤 Bolo!\\nMute karna hai toh mic pe click karo 💖';
+  document.getElementById('voiceStatus').innerText='Bolo Boss 💖';
   document.getElementById('voiceTranscript').innerText='';
   document.getElementById('orb').className='orb listening';
   document.getElementById('waveBars').style.display='flex';
@@ -339,13 +338,13 @@ function toggleMute(){
   isMicMuted=!isMicMuted;
   updateMicUI();
   if(isMicMuted){
-    document.getElementById('voiceStatus').innerText='Mic MUTE hai Boss 🔇\\nUnmute ke liye fir se click karo';
+    document.getElementById('voiceStatus').innerText='Mic Mute hai 🔇';
     if(liveRecorder && liveRecorder.state==='recording'){ try{ liveRecorder.stop(); }catch(e){} }
     if(liveTimer){ clearInterval(liveTimer); liveTimer=null; }
     document.getElementById('orb').className='orb muted';
     document.getElementById('waveBars').style.display='none';
   } else {
-    document.getElementById('voiceStatus').innerText='Mic ON hai Boss 🎤 Bolo!\\nSanjuu sun rahi hai 💖';
+    document.getElementById('voiceStatus').innerText='Bolo Boss 💖';
     document.getElementById('orb').className='orb listening';
     document.getElementById('waveBars').style.display='flex';
     startLiveAutoRecord();
@@ -360,7 +359,7 @@ function toggleVoicePlus(){
   let m=document.getElementById('voicePlusMenu');
   m.style.display = m.style.display==='flex'? 'none' : 'flex';
 }
-// ===== CAMERA FIX - AB BLACK NAHI AYEGA =====
+// ===== CAMERA FIX - BACK CAMERA + LIVE VISION =====
 async function openLiveCam(){
   document.getElementById('voicePlusMenu').style.display='none';
   let view=document.getElementById('liveCamView');
@@ -368,28 +367,41 @@ async function openLiveCam(){
   isLiveCamOn=true;
   document.getElementById('orbArea').style.display='none';
   let video=document.getElementById('liveCamVideo');
+  video.style.display='block';
+  let old=document.getElementById('galleryPreview'); if(old) old.remove();
   try{
-    // Simple video:true - sab device me chalega, black nahi ayega
-    let stream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+    // FIX 3: BACK CAMERA - environment, front nahi khulega Boss!
+    let stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:"environment"}, width:{ideal:1280}, height:{ideal:720}}, audio:false});
     liveCamStream=stream;
     video.srcObject=stream;
     await video.play();
-    document.getElementById('voiceStatus').innerText='Live Camera ON hai Boss 📷\\nSanjuu aapka camera dekh rahi hai!\\nBolo "ye kya hai?" 💖';
+    startLiveVision();
   }catch(e){
     try{
-      // Fallback to environment camera
       let stream2 = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}, audio:false});
       liveCamStream=stream2;
       video.srcObject=stream2;
       await video.play();
+      startLiveVision();
     }catch(e2){
-      alert('Boss Camera allow karo 🙏 Upar address bar me 🔒 pe click karke Camera Allow karo, aur https pe kholo!');
-      closeLiveCam();
+      try{
+        let stream3 = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+        liveCamStream=stream3; video.srcObject=stream3; await video.play(); startLiveVision();
+      }catch(e3){
+        alert('Boss Camera allow karo 🙏 Upar address bar me 🔒 pe click karke Camera Allow karo, aur https pe kholo!');
+        closeLiveCam();
+      }
     }
   }
 }
+function startLiveVision(){
+  // FIX 4: LIVE VISION - Camera = Sanjuu ki Aankh, har 2 sec me frame update
+  if(liveVisionTimer) clearInterval(liveVisionTimer);
+  liveVisionTimer=setInterval(()=>{ if(isLiveCamOn) captureCamFrame(); }, 2000);
+}
 function closeLiveCam(){
   isLiveCamOn=false;
+  if(liveVisionTimer){ clearInterval(liveVisionTimer); liveVisionTimer=null; }
   document.getElementById('liveCamView').style.display='none';
   document.getElementById('orbArea').style.display='flex';
   let video=document.getElementById('liveCamVideo');
@@ -401,6 +413,7 @@ function closeLiveCam(){
 function captureCamFrame(){
   let video=document.getElementById('liveCamVideo');
   if(!video ||!isLiveCamOn) return null;
+  if(!video.videoWidth) return lastCamFrame || null;
   let canvas=document.createElement('canvas');
   canvas.width=video.videoWidth || 640; canvas.height=video.videoHeight || 480;
   canvas.getContext('2d').drawImage(video,0,0);
@@ -423,7 +436,6 @@ function handleVoiceGallery(file){
     view.appendChild(img);
   }, 500);
 }
-
 async function startLiveAutoRecord(){
   if(isMicMuted ||!isLiveMode) return;
   if(liveRecorder && liveRecorder.state==='recording') return;
@@ -435,7 +447,8 @@ async function startLiveAutoRecord(){
     liveRecorder.onstop = async ()=>{
       let blob = new Blob(liveChunks, {type:'audio/webm'});
       if(blob.size<900 || isMicMuted){ cleanupLiveRec(); if(!isMicMuted && isLiveMode) setTimeout(()=>startLiveAutoRecord(), 800); return; }
-      document.getElementById('voiceStatus').innerText='Samajh rahi hu... 🤔';
+      // FIX 1: Samajh rahi hu wala system BAND - status khali, seedha answer
+      document.getElementById('voiceStatus').innerText='';
       document.getElementById('orb').className='orb';
       document.getElementById('waveBars').style.display='none';
       let camFrame=null;
@@ -448,6 +461,7 @@ async function startLiveAutoRecord(){
         let transcript=j.transcript || '';
         let answer=j.answer || '';
         if(answer.startsWith('__IMAGE__')){ let p=answer.split('__'); answer=p[2]; }
+        // FIX: Transcript upar chhota dikhega, answer bada - dohrana nahi
         document.getElementById('voiceTranscript').innerText = transcript? '"'+transcript+'"' : '';
         document.getElementById('voiceStatus').innerText = answer;
         document.getElementById('orb').className='orb speaking';
@@ -455,7 +469,7 @@ async function startLiveAutoRecord(){
         speakText(answer, null, ()=>{
           if(isLiveMode &&!isMicMuted){
             document.getElementById('orb').className='orb listening';
-            document.getElementById('voiceStatus').innerText='Bolo Boss, sun rahi hu... 🎤💖';
+            document.getElementById('voiceStatus').innerText='Bolo Boss 💖';
             document.getElementById('waveBars').style.display='flex';
             setTimeout(()=>{ if(isLiveMode &&!isMicMuted) startLiveAutoRecord(); }, 700);
           } else {
@@ -472,7 +486,7 @@ async function startLiveAutoRecord(){
     liveRecorder.start();
     document.getElementById('orb').className='orb listening';
     document.getElementById('waveBars').style.display='flex';
-    document.getElementById('voiceStatus').innerText='Sun rahi hu Boss... bolo 🎤';
+    document.getElementById('voiceStatus').innerText='Bolo Boss 💖';
     let btn=document.getElementById('liveMicBtn'); btn.classList.add('rec');
     let sec=0;
     liveTimer=setInterval(()=>{ sec++; if(sec>=5){ stopLiveAutoRecord(); } },1000);
@@ -494,7 +508,8 @@ async function sendVoiceText(){
   let camFrame=null;
   if(isLiveCamOn){ camFrame=captureCamFrame(); }
   document.getElementById('voiceTranscript').innerText='"'+text+'"';
-  document.getElementById('voiceStatus').innerText='Sooch rahi hu... 🤔';
+  // FIX: Soch rahi hu band - khali rakho
+  document.getElementById('voiceStatus').innerText='';
   document.getElementById('orb').className='orb speaking';
   document.getElementById('waveBars').style.display='flex';
   inp.value='';
@@ -564,56 +579,79 @@ function createNow(){
 }
 const micBtn = document.getElementById('mic');
 const recHint = document.getElementById('recHint');
-micBtn.addEventListener('mousedown', startHoldRecording);
-micBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); startHoldRecording(); }, {passive:false});
-micBtn.addEventListener('mouseup', stopHoldRecording);
-micBtn.addEventListener('touchend', (e)=>{ e.preventDefault(); stopHoldRecording(); }, {passive:false});
-micBtn.addEventListener('mouseleave', ()=>{ if(isRecording) stopHoldRecording(); });
-async function startHoldRecording(){
+let shouldSend = true;
+micBtn.addEventListener('click', toggleNewRecording);
+async function toggleNewRecording(){
+  if(isRecording){ shouldSend = true; stopNewRecording(); return; }
+  startNewRecording();
+}
+async function startNewRecording(){
   if(isRecording) return;
   try{
     const stream = await navigator.mediaDevices.getUserMedia({audio:true});
     streamRef=stream; mediaRecorder = new MediaRecorder(stream); audioChunks=[];
+    shouldSend = true;
     mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) audioChunks.push(e.data); };
     mediaRecorder.onstop = async ()=>{
       let blob = new Blob(audioChunks, {type:'audio/webm'});
-      if(blob.size < 800){ cleanupRec(); return; }
-      const chat = document.getElementById('chat');
-      let userRow=document.createElement('div'); userRow.className='row-user';
-      let umsg=document.createElement('div'); umsg.className='u'; let audioUrl = URL.createObjectURL(blob);
-      umsg.innerHTML=`🎙️ Voice <br><audio controls src="${audioUrl}"></audio>`;
-      let uspeak=document.createElement('div'); uspeak.className='speak-out'; uspeak.innerText='🔈';
-      userRow.appendChild(umsg); userRow.appendChild(uspeak); chat.appendChild(userRow);
-      chat.parentElement.scrollTop=999999;
-      let row=document.createElement('div'); row.className='row';
-      let l=document.createElement('div'); l.className='a'; l.textContent='Voice sun rahi hu...'; row.appendChild(l); chat.appendChild(row);
-      let fd=new FormData(); fd.append('audio',blob,'voice.webm');
-      try{
-        let r=await fetch('/voice',{method:'POST',body:fd}); let j=await r.json();
-        if(j.answer.startsWith("__IMAGE__")){
-          let parts=j.answer.split("__"); let url=parts[1]; let prm=parts[2];
-          l.innerHTML=`"${j.transcript}"<br><br><b>${prm}</b><br><img src="${url}" onclick="openLightbox('${url}')" /><br><button onclick="downloadImage('${url}','${prm}')" style="margin-top:8px;background:#111;color:#fff;padding:8px 14px;border-radius:20px;border:0">⬇️ Download</button>`;
-          let sp=document.createElement('div'); sp.className='speak-out'; sp.innerText='🔈'; sp.onclick=()=>speakText(prm, sp); row.appendChild(sp);
-          uspeak.onclick=()=>speakText(j.transcript, uspeak);
-          umsg.innerHTML=`🎙️ ${j.transcript} <br><audio controls src="${audioUrl}"></audio>`;
-        } else {
-          l.innerHTML=`"${j.transcript}"<br><br>${j.answer}`;
-          let sp=document.createElement('div'); sp.className='speak-out'; sp.innerText='🔈'; sp.onclick=()=>speakText(j.answer, sp); row.appendChild(sp);
-          uspeak.onclick=()=>speakText(j.transcript, uspeak);
-          umsg.innerHTML=`🎙️ ${j.transcript} <br><audio controls src="${audioUrl}"></audio>`;
-        }
-      }catch(e){ l.textContent="Voice error 🥺"; } cleanupRec();
+      hideRecUI();
+      if(!shouldSend || blob.size < 800){ cleanupRec(); return; }
+      sendVoiceBlob(blob);
     };
-    mediaRecorder.start(); isRecording=true; micBtn.classList.add('rec'); micBtn.innerText='🔴'; recSeconds=0;
-    recHint.style.display='block'; recHint.innerText=`🔴 Recording... dabake rakho Boss - chodoge toh send hoga`;
-    recTimer = setInterval(()=>{ recSeconds++; recHint.innerText=`🔴 Recording... ${recSeconds}s - chod do toh send hoga`; if(recSeconds>=120) stopHoldRecording(); },1000);
+    mediaRecorder.start(); isRecording=true; recSeconds=0;
+    showRecUI();
+    recTimer = setInterval(()=>{ recSeconds++; updateRecUI(); if(recSeconds>=120){ shouldSend=true; stopNewRecording(); } },1000);
   }catch(e){ alert("Boss mic Allow karo 🙏"); cleanupRec(); }
 }
-function stopHoldRecording(){ if(!isRecording) return; if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop(); }
+function showRecUI(){
+  document.getElementById('mainBox').style.display='none';
+  document.getElementById('recBar').classList.add('show');
+  document.getElementById('recTime').innerText='0:00';
+}
+function updateRecUI(){
+  document.getElementById('recTime').innerText = Math.floor(recSeconds/60)+":"+(recSeconds%60<10?"0":"")+(recSeconds%60);
+}
+function hideRecUI(){
+  document.getElementById('recBar').classList.remove('show');
+  document.getElementById('mainBox').style.display='flex';
+}
+function cancelNewRecording(){
+  shouldSend = false;
+  if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop();
+}
+function stopNewRecording(){ if(!isRecording) return; if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop(); }
 function cleanupRec(){
   isRecording=false; micBtn.classList.remove('rec'); micBtn.innerText='🎙️'; recHint.style.display='none';
   if(recTimer){ clearInterval(recTimer); recTimer=null; }
   if(streamRef){ streamRef.getTracks().forEach(t=>t.stop()); streamRef=null; }
+  hideRecUI();
+}
+async function sendVoiceBlob(blob){
+  const chat = document.getElementById('chat');
+  let userRow=document.createElement('div'); userRow.className='row-user';
+  let umsg=document.createElement('div'); umsg.className='u'; let audioUrl = URL.createObjectURL(blob);
+  umsg.innerHTML=`🎙️ Voice <br><audio controls src="${audioUrl}"></audio>`;
+  let uspeak=document.createElement('div'); uspeak.className='speak-out'; uspeak.innerText='🔈';
+  userRow.appendChild(umsg); userRow.appendChild(uspeak); chat.appendChild(userRow);
+  chat.parentElement.scrollTop=999999;
+  let row=document.createElement('div'); row.className='row';
+  let l=document.createElement('div'); l.className='a'; l.textContent='Voice sun rahi hu...'; row.appendChild(l); chat.appendChild(row);
+  let fd=new FormData(); fd.append('audio',blob,'voice.webm');
+  try{
+    let r=await fetch('/voice',{method:'POST',body:fd}); let j=await r.json();
+    if(j.answer.startsWith("__IMAGE__")){
+      let parts=j.answer.split("__"); let url=parts[1]; let prm=parts[2];
+      l.innerHTML=`"${j.transcript}"<br><br><b>${prm}</b><br><img src="${url}" onclick="openLightbox('${url}')" /><br><button onclick="downloadImage('${url}','${prm}')" style="margin-top:8px;background:#111;color:#fff;padding:8px 14px;border-radius:20px;border:0">⬇️ Download</button>`;
+      let sp=document.createElement('div'); sp.className='speak-out'; sp.innerText='🔈'; sp.onclick=()=>speakText(prm, sp); row.appendChild(sp);
+      uspeak.onclick=()=>speakText(j.transcript, uspeak);
+      umsg.innerHTML=`🎙️ ${j.transcript} <br><audio controls src="${audioUrl}"></audio>`;
+    } else {
+      l.innerHTML=`"${j.transcript}"<br><br>${j.answer}`;
+      let sp=document.createElement('div'); sp.className='speak-out'; sp.innerText='🔈'; sp.onclick=()=>speakText(j.answer, sp); row.appendChild(sp);
+      uspeak.onclick=()=>speakText(j.transcript, uspeak);
+      umsg.innerHTML=`🎙️ ${j.transcript} <br><audio controls src="${audioUrl}"></audio>`;
+    }
+  }catch(e){ l.textContent="Voice error 🥺"; } cleanupRec();
 }
 async function makeImageWithRef(enhanced, original, refUrl, rawDetail){
  let c=document.getElementById('chat');
@@ -704,7 +742,7 @@ def ask():
                     comp = cur_client.chat.completions.create(
                         model="llama-3.2-11b-vision-preview",
                         messages=[{"role":"user","content":[
-                            {"type":"text","text": f"User camera me ye dikh raha hai. User puch raha hai: {query}. Hinglish me 2 line me jawab do. Ye kya hai batao."},
+                            {"type":"text","text": f"User camera me ye dikh raha hai. User puch raha hai: {query}. Hinglish me 2 line me jawab do. Ye kya hai batao. Question dobara mat bolo, seedha answer do."},
                             {"type":"image_url","image_url":{"url": f"data:image/jpeg;base64,{b64}"}}
                         ]}],
                         max_tokens=300
@@ -747,7 +785,7 @@ def voice():
                 comp = cur_client.chat.completions.create(
                     model="llama-3.2-11b-vision-preview",
                     messages=[{"role":"user","content":[
-                        {"type":"text","text": f"Camera me ye dikh raha hai. User bola: {txt}. Isko Hinglish me 2 line me samjhao ye kya hai."},
+                        {"type":"text","text": f"Camera me ye dikh raha hai. User bola: {txt}. Isko Hinglish me 2 line me samjhao ye kya hai. Question dobara mat bolo, seedha answer do."},
                         {"type":"image_url","image_url":{"url": f"data:image/jpeg;base64,{b64}"}}
                     ]}],
                     max_tokens=300
